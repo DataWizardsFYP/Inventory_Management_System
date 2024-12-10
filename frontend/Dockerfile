@@ -1,25 +1,14 @@
-# Use Node.js image for building the React app
-FROM node:16 AS build
+# Dockerfile for the client
+FROM node:latest
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install --legacy-peer-deps
+COPY package.json .
 
-# Copy the rest of the application files
-COPY . ./
+COPY . .
 
-# Build the React application
-RUN npm run build
+RUN npm install --force
 
-# Use a lightweight Nginx server to serve the built files
-FROM nginx:1.21
-COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 3000
 
-# Expose port 80 for the React app
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm","run" ,"start"]
